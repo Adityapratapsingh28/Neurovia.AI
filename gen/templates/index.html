@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Medicine Report</title>
+    <style>
+        :root {
+            --primary: #4285f4;
+            --primary-dark: #3367d6;
+            --success: #0f9d58;
+            --warning: #f4b400;
+            --error: #db4437;
+            --light-gray: #f8f9fa;
+            --border-color: #dadce0;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        h2 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-weight: 500;
+            font-size: 1.25rem;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .progress-step::before {
+            content: '';
+            height: 4px;
+            width: 100%;
+            background-color: var(--border-color);
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            z-index: 1;
+        }
+        
+        .progress-step:last-child::before {
+            display: none;
+        }
+        
+        .step-indicator {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .step-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        .progress-step.active .step-indicator {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .progress-step.active .step-title {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .progress-step.completed .step-indicator {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .file-input-container {
+            position: relative;
+        }
+        
+        .file-input-box {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: var(--light-gray);
+        }
+        
+        .file-input-box:hover {
+            border-color: var(--primary);
+        }
+        
+        .file-input-box i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .file-input-box p {
+            margin: 5px 0;
+            color: var(--text-secondary);
+        }
+        
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .file-info i {
+            margin-right: 10px;
+            color: var(--success);
+        }
+        
+        .file-info-content {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .file-size {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .remove-file {
+            color: var(--error);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+        
+        .validation-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-back {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .btn-back:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .btn-next {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-submit {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-submit:hover {
+            background-color: #0b8043;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(66, 133, 244, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .file-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .file-list-item {
+            background-color: var(--light-gray);
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-list-item i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .error-messages {
+            background-color: #fbe9e7;
+            border-left: 4px solid var(--error);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .report {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .report-content {
+            margin: 20px 0;
+        }
+        
+        .disclaimer {
+            background-color: #fff8e1;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .progress-step .step-title {
+                font-size: 0.75rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .btn-back {
+                order: 2;
+            }
+            
+            .btn-next, .btn-submit {
+                order: 1;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Personalized Medicine Analysis</h1>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step active" id="progressStep1">
+                    <div class="step-indicator">1</div>
+                    <div class="step-title">Upload Medicine</div>
+                </div>
+                <div class="progress-step" id="progressStep2">
+                    <div class="step-indicator">2</div>
+                    <div class="step-title">Medical History</div>
+                </div>
+                <div class="progress-step" id="progressStep3">
+                    <div class="step-indicator">3</div>
+                    <div class="step-title">Review & Submit</div>
+                </div>
+            </div>
+        </div>
+        
+        <form id="mainForm" method="POST" enctype="multipart/form-data">
+            <div class="step active" id="step1">
+                <h2>Upload Your Medicine Information</h2>
+                <p>Upload an image of your medication or prescription document for analysis.</p>
+                
+                <div class="form-group">
+                    <label for="medicineFile">Medicine Image/Document:</label>
+                    <div class="file-input-container">
+                        <div class="file-input-box" id="medicineFileBox">
+                            <i class="fas fa-file-medical"></i>
+                            <h3>Click to upload or drag & drop</h3>
+                            <p>Supports PNG, JPG, JPEG, PDF (Max 16MB)</p>
+                        </div>
+                        <input type="file" id="medicineFile" name="medicine_file" class="file-input" accept=".png,.jpg,.jpeg,.pdf">
+                    </div>
+                    
+                    <div class="file-info" id="medicineFileInfo">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="file-info-content">
+                            <div class="file-name" id="medicineFileName"></div>
+                            <div class="file-size" id="medicineFileSize"></div>
+                        </div>
+                        <button type="button" class="remove-file" id="removeMedicineFile">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="validation-message" id="medicineFileValidation">
+                        Please select a valid file (PNG, JPG, JPEG, PDF under 16MB)
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn-next" onclick="validateAndNextStep('medicineFile')">Continue <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="step" id="step2">
+                <h2>Upload Your Medical History</h2>
+                <p>Upload a document containing your medical history for more accurate analysis.</p>
+                
+                <div class="form-group">
+                    <label for="historyFile">Medical History Document:</label>
+                    <div class="file-input-container">
+                        <div class="file-input-box" id="historyFileBox">
+                            <i class="fas fa-file-medical-alt"></i>
+                            <h3>Click to upload or drag & drop</h3>
+                            <p>Supports PNG, JPG, JPEG, PDF (Max 16MB)</p>
+                        </div>
+                        <input type="file" id="historyFile" name="medical_history_file" class="file-input" accept=".png,.jpg,.jpeg,.pdf">
+                    </div>
+                    
+                    <div class="file-info" id="historyFileInfo">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="file-info-content">
+                            <div class="file-name" id="historyFileName"></div>
+                            <div class="file-size" id="historyFileSize"></div>
+                        </div>
+                        <button type="button" class="remove-file" id="removeHistoryFile">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="validation-message" id="historyFileValidation">
+                        Please select a valid file (PNG, JPG, JPEG, PDF under 16MB)
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn-back" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="button" class="btn-next" onclick="validateAndNextStep('historyFile')">Continue <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="step" id="step3">
+                <h2>Review Your Files & Generate Report</h2>
+                <p>Please review your uploaded files before generating your personalized medicine report.</p>
+                
+                <h3>Files Ready for Analysis:</h3>
+                <ul class="file-list" id="fileList"></ul>
+                
+                <div class="button-group">
+                    <button type="button" class="btn-back" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button type="submit" class="btn-submit" id="analyzeBtn" onclick="showLoading()">
+                        <i class="fas fa-flask"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div class="loading" id="loadingIndicator">
+        <div class="spinner"></div>
+        <h3>Analyzing Your Information</h3>
+        <p>This may take a minute or two. Please don't close this page.</p>
+    </div>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="error-messages">
+                {% for message in messages %}
+                    <p><i class="fas fa-exclamation-circle"></i> {{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    {% if report %}
+    <div class="report">
+        <h2><i class="fas fa-clipboard-check"></i> Personalized Medicine Report</h2>
+        <div class="report-content">
+            {{ report|safe }}
+        </div>
+        <div class="disclaimer">
+            <p><strong><i class="fas fa-exclamation-triangle"></i> Disclaimer:</strong> This report is generated by AI and should be verified by a healthcare professional. The information provided is not medical advice and should not be used to make medical decisions without consulting a doctor.</p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+        const maxFileSize = 16 * 1024 * 1024; // 16MB in bytes
+        
+        // File input handling
+        document.getElementById('medicineFile').addEventListener('change', function() {
+            handleFileSelection(this, 'medicineFileName', 'medicineFileSize', 'medicineFileInfo', 'medicineFileValidation');
+        });
+        
+        document.getElementById('historyFile').addEventListener('change', function() {
+            handleFileSelection(this, 'historyFileName', 'historyFileSize', 'historyFileInfo', 'historyFileValidation');
+        });
+        
+        // Remove file buttons
+        document.getElementById('removeMedicineFile').addEventListener('click', function(e) {
+            e.preventDefault();
+            resetFileInput('medicineFile', 'medicineFileInfo', 'medicineFileValidation');
+        });
+        
+        document.getElementById('removeHistoryFile').addEventListener('click', function(e) {
+            e.preventDefault();
+            resetFileInput('historyFile', 'historyFileInfo', 'historyFileValidation');
+        });
+        
+        // Enable drag and drop
+        setupDragAndDrop('medicineFileBox', 'medicineFile');
+        setupDragAndDrop('historyFileBox', 'historyFile');
+        
+        function setupDragAndDrop(boxId, fileInputId) {
+            const box = document.getElementById(boxId);
+            const fileInput = document.getElementById(fileInputId);
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                box.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                box.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                box.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                box.style.borderColor = '#4285f4';
+                box.style.backgroundColor = '#e8f0fe';
+            }
+            
+            function unhighlight() {
+                box.style.borderColor = '#dadce0';
+                box.style.backgroundColor = '#f8f9fa';
+            }
+            
+            box.addEventListener('drop', function(e) {
+                fileInput.files = e.dataTransfer.files;
+                
+                // Trigger change event manually
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            });
+            
+            box.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+        
+        function handleFileSelection(fileInput, fileNameId, fileSizeId, fileInfoId, validationId) {
+            const fileNameElement = document.getElementById(fileNameId);
+            const fileSizeElement = document.getElementById(fileSizeId);
+            const fileInfoElement = document.getElementById(fileInfoId);
+            const validationElement = document.getElementById(validationId);
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                
+                if (file.size > maxFileSize) {
+                    validationElement.textContent = `File size exceeds 16MB limit (${fileSizeMB} MB)`;
+                    validationElement.style.display = 'block';
+                    fileInfoElement.style.display = 'none';
+                    return false;
+                }
+                
+                fileNameElement.textContent = file.name;
+                fileSizeElement.textContent = `${fileSizeMB} MB`;
+                fileInfoElement.style.display = 'flex';
+                validationElement.style.display = 'none';
+                return true;
+            } else {
+                fileInfoElement.style.display = 'none';
+                validationElement.style.display = 'none';
+                return false;
+            }
+        }
+        
+        function resetFileInput(fileInputId, fileInfoId, validationId) {
+            const fileInput = document.getElementById(fileInputId);
+            const fileInfoElement = document.getElementById(fileInfoId);
+            const validationElement = document.getElementById(validationId);
+            
+            fileInput.value = '';
+            fileInfoElement.style.display = 'none';
+            validationElement.style.display = 'none';
+        }
+        
+        function validateAndNextStep(fileInputId) {
+            const fileInput = document.getElementById(fileInputId);
+            const validationId = fileInputId + 'Validation';
+            const validationElement = document.getElementById(validationId);
+            
+            if (!fileInput.files.length) {
+                validationElement.textContent = 'Please select a file to continue';
+                validationElement.style.display = 'block';
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            
+            if (file.size > maxFileSize) {
+                validationElement.textContent = `File size exceeds 16MB limit (${fileSizeMB} MB)`;
+                validationElement.style.display = 'block';
+                return;
+            }
+            
+            validationElement.style.display = 'none';
+            nextStep();
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                
+                // Mark current step as completed
+                document.getElementById(`progressStep${currentStep}`).classList.add('completed');
+                
+                // Show next step
+                currentStep++;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                document.getElementById(`progressStep${currentStep}`).classList.add('active');
+                
+                if (currentStep === totalSteps) {
+                    updateFileList();
+                }
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                document.getElementById(`progressStep${currentStep}`).classList.remove('active');
+                
+                // Show previous step
+                currentStep--;
+                document.getElementById(`step${currentStep}`).classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        function updateFileList() {
+            const medicineFile = document.getElementById('medicineFile').files[0];
+            const historyFile = document.getElementById('historyFile').files[0];
+            
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            if (medicineFile) {
+                const li = document.createElement('li');
+                li.className = 'file-list-item';
+                const fileSizeMB = (medicineFile.size / (1024 * 1024)).toFixed(2);
+                li.innerHTML = `<i class="fas fa-file-medical"></i> <strong>Medicine:</strong> ${medicineFile.name} (${fileSizeMB} MB)`;
+                fileList.appendChild(li);
+            }
+            
+            if (historyFile) {
+                const li = document.createElement('li');
+                li.className = 'file-list-item';
+                const fileSizeMB = (historyFile.size / (1024 * 1024)).toFixed(2);
+                li.innerHTML = `<i class="fas fa-file-medical-alt"></i> <strong>Medical History:</strong> ${historyFile.name} (${fileSizeMB} MB)`;
+                fileList.appendChild(li);
+            }
+        }
+        
+        function showLoading() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('analyzeBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            // Submit the form
+            setTimeout(() => {
+                document.getElementById('mainForm').submit();
+            }, 100);
+        }
+        
+        // Initialize file info if browser has cached values
+        window.onload = function() {
+            if (document.getElementById('medicineFile').files.length > 0) {
+                handleFileSelection(
+                    document.getElementById('medicineFile'), 
+                    'medicineFileName', 
+                    'medicineFileSize', 
+                    'medicineFileInfo', 
+                    'medicineFileValidation'
+                );
+            }
+            
+            if (document.getElementById('historyFile').files.length > 0) {
+                handleFileSelection(
+                    document.getElementById('historyFile'), 
+                    'historyFileName', 
+                    'historyFileSize', 
+                    'historyFileInfo', 
+                    'historyFileValidation'
+                );
+            }
+        };
+    </script>
+</body>
+</html>

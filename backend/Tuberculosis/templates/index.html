@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuberculosis Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .drop-zone {
+            border: 2px dashed #3f3f46;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .drop-zone:hover, .drop-zone.active {
+            border-color: #14b8a6;
+        }
+        .file-preview {
+            max-height: 300px;
+            margin: 1rem auto;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-2 text-primary-400">Tuberculosis Detection</h1>
+            <p class="text-gray-400">Upload a chest X-ray image to detect the presence of tuberculosis</p>
+        </header>
+
+        <main class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-xl p-6">
+            <form id="upload-form" action="/" method="post" enctype="multipart/form-data" class="space-y-6">
+                <div class="drop-zone p-8 text-center cursor-pointer" id="drop-zone">
+                    <div class="flex flex-col items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="text-lg font-medium mb-1">Drag & Drop your chest X-ray image here</p>
+                        <p class="text-sm text-gray-500 mb-3">or</p>
+                        <label for="file-input" class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors cursor-pointer">
+                            Browse Files
+                        </label>
+                        <input type="file" name="file" id="file-input" accept="image/*" class="hidden" required>
+                    </div>
+                </div>
+
+                <div id="file-preview" class="file-preview">
+                    <img id="preview-image" src="#" alt="Preview" class="max-w-full max-h-full mx-auto">
+                </div>
+
+                <div id="file-info" class="text-center hidden">
+                    <p class="text-gray-400"><span id="file-name">No file selected</span></p>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" id="predict-btn" class="px-6 py-3 bg-primary-600 text-white font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Predict
+                    </button>
+                </div>
+            </form>
+
+            {% if message %}
+            <div class="mt-4 p-3 bg-red-900/50 text-red-200 rounded-md">
+                {{ message }}
+            </div>
+            {% endif %}
+        </main>
+
+        <footer class="mt-8 text-center text-gray-500 text-sm">
+            <p>© 2025 Tuberculosis Detection System</p>
+        </footer>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewContainer = document.getElementById('file-preview');
+        const previewImage = document.getElementById('preview-image');
+        const fileInfo = document.getElementById('file-info');
+        const fileName = document.getElementById('file-name');
+        const predictBtn = document.getElementById('predict-btn');
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        // Highlight drop zone when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        // Handle browse files
+        fileInput.addEventListener('change', handleFiles, false);
+
+        // Click on drop zone to trigger file input
+        dropZone.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'LABEL' && !e.target.closest('label')) {
+                fileInput.click();
+            }
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        function highlight() {
+            dropZone.classList.add('active');
+        }
+
+        function unhighlight() {
+            dropZone.classList.remove('active');
+        }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFiles();
+            }
+        }
+
+        function handleFiles() {
+            const file = fileInput.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                fileInfo.classList.remove('hidden');
+                
+                // Preview the image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+                
+                // Enable the predict button
+                predictBtn.disabled = false;
+            } else {
+                fileInfo.classList.add('hidden');
+                previewContainer.style.display = 'none';
+                predictBtn.disabled = true;
+            }
+        }
+
+        // Check if file input has files on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            if (fileInput.files.length > 0) {
+                handleFiles();
+            }
+        });
+    </script>
+</body>
+</html>

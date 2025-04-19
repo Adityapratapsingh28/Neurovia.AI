@@ -1,0 +1,47 @@
+
+=================================================
+           MEDICINE INFORMATION
+=================================================
+
+-------- INFORMATION FROM PACKAGE --------
+
+MEDICINE NAME:
+  Brand Name: Paraceramar
+  Generic Name: Paracetamol
+
+COMPOSITION:
+  {'Active Ingredient': 'Paracetamol', 'Strength': '500 mg'}
+
+MANUFACTURER:
+  {'Name': 'INTAS', 'Address': 'Saga Biotech pa Ltd., Hatoda-382 210, visit edabad INDIA'}
+
+DATES:
+  Manufacturing Date: 2017
+  Expiry Date: Not found in the provided text
+
+-------- COMPREHENSIVE MEDICINE DETAILS --------
+
+DESCRIPTION:
+  Paraceramar is a pain reliever and fever reducer belonging to the class of analgesics and antipyretics. It is a generic version of acetaminophen, commonly used to treat mild to moderate pain and reduce fever.
+
+STORAGE INSTRUCTIONS:
+  Store Paraceramar in a cool, dry place, away from direct sunlight and moisture. Keep the medicine out of reach of children and pets. Do not store in the bathroom or near a sink.
+
+USAGE INSTRUCTIONS:
+  Paraceramar is indicated for the relief of mild to moderate pain, reduction of fever, and treatment of conditions such as headaches, toothaches, menstrual cramps, and arthritis. It can also be used to reduce fever in adults and children.
+
+WARNINGS/CAUTIONS:
+  Paraceramar should be used with caution in patients with liver disease, kidney disease, or those who consume more than three alcoholic beverages per day. It is not recommended for children under 3 years old. Patients should not exceed the recommended dose, as it may cause liver damage or allergic reactions.
+
+SIDE EFFECTS:
+  {'Common': 'nausea, vomiting, stomach pain, headache, dizziness', 'Serious': 'allergic reactions, liver damage, kidney damage, bleeding, Stevens-Johnson syndrome'}
+
+DOSAGE INFORMATION:
+  {'Daily Schedule': '1-2 tablets every 4-6 hours as needed, not to exceed 4 grams (4000mg) in 24 hours', 'Meal Timing': 'Take with or without food, but taking with food may reduce stomach upset', 'Typical Duration': 'As needed, but not recommended for more than 10 days for pain relief or 3 days for fever reduction', 'Special Populations': {'Elderly': 'Start with a lower dose (250-375mg) and adjust as needed', 'Kidney Issues': 'Use with caution and adjust dose based on creatinine clearance', 'Liver Disease': 'Use with caution and monitor liver function'}}
+
+DIETARY RECOMMENDATIONS:
+  {'Foods to Avoid': 'Avoid consuming more than three alcoholic beverages per day', 'Foods that Enhance Effectiveness': 'None known', 'Foods that Reduce Effectiveness': 'None known', 'Dietary Restrictions': 'None'}
+
+DRUG INTERACTIONS:
+  {'Important Interactions': 'Warfarin, isoniazid, rifampin, and other medications that affect the liver or kidneys. Paraceramar may increase the risk of bleeding when taken with warfarin.'}
+=================================================

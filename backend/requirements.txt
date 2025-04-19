@@ -1,0 +1,12 @@
+phidata
+groq
+easyocr
+opencv-python
+pyspellchecker
+python-dotenv
+Flask==2.3.2
+Flask
+opencv-python
+numpy
+tensorflow
+werkzeug

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Information Scanner</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #4a6fa5;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .upload-section {
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3a5a80;
+        }
+        .results {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .info-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .info-section h3 {
+            color: #4a6fa5;
+            margin-top: 0;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4a6fa5;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .chatbot {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        .user-message {
+            background: #e3f2fd;
+            margin-left: 20%;
+        }
+        .bot-message {
+            background: #f1f1f1;
+            margin-right: 20%;
+        }
+        .chat-input {
+            display: flex;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+        #send-btn {
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Medicine Information Scanner</h1>
+            <p>Upload an image of medicine packaging to get detailed information</p>
+        </header>
+
+        <div class="upload-section">
+            <div class="form-group">
+                <label for="medicine-image">Upload Medicine Package Image</label>
+                <input type="file" id="medicine-image" accept="image/*">
+            </div>
+            <button id="analyze-btn">Analyze Medicine</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing medicine package. This may take a moment...</p>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Medicine Information</h2>
+            
+            <div class="info-section">
+                <h3>Information from Package</h3>
+                <div id="package-info"></div>
+            </div>
+            
+            <div class="info-section">
+                <h3>Comprehensive Medicine Details</h3>
+                <div id="detailed-info"></div>
+            </div>
+        </div>
+
+        <div class="chatbot" id="chatbot" style="display: none;">
+            <h3>Medicine Chatbot</h3>
+            <p>Ask any questions about this medicine</p>
+            
+            <div class="chat-messages" id="chat-messages"></div>
+            
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Type your question here...">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('analyze-btn').addEventListener('click', async function() {
+            const fileInput = document.getElementById('medicine-image');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select an image file first');
+                return;
+            }
+            
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Analysis failed');
+                }
+                
+                const data = await response.json();
+                
+                // Display results
+                document.getElementById('package-info').innerHTML = formatPackageInfo(data);
+                document.getElementById('detailed-info').innerHTML = formatDetailedInfo(data);
+                
+                // Show results and chatbot
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+                document.getElementById('chatbot').style.display = 'block';
+                
+                // Initialize chatbot
+                initializeChatbot(data);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                alert('Error analyzing medicine package: ' + error.message);
+            }
+        });
+        
+        function formatPackageInfo(data) {
+            let html = '';
+            
+            if (data['Medicine Name']) {
+                html += `<p><strong>Medicine Name:</strong><br>
+                    Brand Name: ${data['Medicine Name']['Brand Name'] || 'Not found'}<br>
+                    Generic Name: ${data['Medicine Name']['Generic Name'] || 'Not found'}</p>`;
+            }
+            
+            html += `<p><strong>Composition:</strong><br>${formatField(data['Composition'])}</p>`;
+            html += `<p><strong>Manufacturer:</strong><br>${formatField(data['Manufacturer Information'])}</p>`;
+            html += `<p><strong>Dates:</strong><br>
+                Manufacturing Date: ${formatField(data['Manufacturing Date'])}<br>
+                Expiry Date: ${formatField(data['Expiry Date'])}</p>`;
+            
+            return html;
+        }
+        
+        function formatDetailedInfo(data) {
+            let html = '';
+            
+            const fields = [
+                'Description', 'Storage Instructions', 'Usage Instructions',
+                'Warnings/Cautions', 'Side Effects', 'Dosage Information',
+                'Dietary Recommendations', 'Drug Interactions'
+            ];
+            
+            fields.forEach(field => {
+                html += `<p><strong>${field}:</strong><br>${formatField(data[field])}</p>`;
+            });
+            
+            return html;
+        }
+        
+        function formatField(value) {
+            if (typeof value === 'object' && value !== null) {
+                return JSON.stringify(value, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+            }
+            return value || 'Not provided';
+        }
+        
+        function initializeChatbot(medicineData) {
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            
+            // Add welcome message
+            addBotMessage(`Hello! I'm MedBot, here to answer your questions about ${medicineData['Medicine Name']['Brand Name'] || 'this medicine'}. What would you like to know?`);
+            
+            async function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                
+                addUserMessage(message);
+                chatInput.value = '';
+                
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            medicine_info: medicineData
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Chat failed');
+                    }
+                    
+                    const data = await response.json();
+                    addBotMessage(data.response);
+                } catch (error) {
+                    console.error('Error:', error);
+                    addBotMessage("Sorry, I encountered an error. Please try again.");
+                }
+            }
+            
+            function addUserMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message user-message';
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function addBotMessage(text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message bot-message';
+                messageDiv.innerHTML = text.replace(/\n/g, '<br>');
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
