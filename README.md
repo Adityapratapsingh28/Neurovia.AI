@@ -91,6 +91,32 @@ https://github.com/user-attachments/assets/7ea0ae63-1e57-4674-89f1-8ee5aa97fdff
 
 https://github.com/user-attachments/assets/4a3e6450-2ba4-460a-aa08-bca402361e7e
 
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+
+<!-- Authors -->
+## Authors
+
+Aditya Pratap Singh - [Linkedin](https://www.linkedin.com/in/aditya-singhpratapsingh8a4a62287?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app)
+
+Vedant Singh - [Linkedin](https://www.linkedin.com/in/vedaantsinngh/?originalSubdomain=in)
+
+Samiyah Khan - [Linkedin](https://www.linkedin.com/in/samiyah-khan-56054a2b7/?originalSubdomain=in)
+
 
 
 
