@@ -21,6 +21,7 @@ Neurovia is a cutting-edge healthcare platform that leverages Deep Learning and 
 
 - Processing & Response ⚙️: Processes inputs, runs AI models, and returns outputs.
 
+
 ### 🤖 Generative AI 
 - Groq – High-performance inference engine powering real-time Generative AI applications
 
@@ -29,4 +30,67 @@ Neurovia is a cutting-edge healthcare platform that leverages Deep Learning and 
 - LLaMA 4 LLM – For personalized medicine analysis and natural language responses
 
 - ElevenLabs – To generate human-like voices for interactive AI-Doctor conversations
+
+## Key Features 🚀
+
+### 🧬 1. Disease Prediction Model
+- Utilizes Convolutional Neural Networks (CNN) with Transfer Learning (ResNet50) to predict a range of diseases including:
+- Achieved 97% accuracy using diverse medical imaging datasets.
+- Tuberculosis
+
+- Brain Tumor
+
+- Bone Fracture
+
+- COPD Syndrome
+
+
+https://github.com/user-attachments/assets/37e6bb9f-eb16-4a7d-ba48-2d11ab7b43c3
+
+### 🧠 2. Geni Tell – DNA Data Analyzer
+- A GenAI-powered agent that:
+
+- Analyzes individual DNA sequences
+
+- Predicts potential health risks
+
+- Provides preventive tips and wellness suggestions
+- Perfect for personalized, proactive healthcare planning.
+
+
+
+
+https://github.com/user-attachments/assets/61d76ee8-1805-4e35-b9e7-a3625f87d25f
+
+
+### 💊 3. Medicine Analyzer
+- Combines your medical history and medicine data to generate a personalized dashboard using LLaMA 4 LLM:
+
+- Medicine usage breakdown
+
+- Side effect predictions
+
+- Drug interactions
+
+- Tailored medical recommendations
+
+
+
+https://github.com/user-attachments/assets/7ea0ae63-1e57-4674-89f1-8ee5aa97fdff
+
+### 🩺 4. AI-Doctor
+- An interactive virtual doctor focused on skin diseases, enhanced with:
+
+- Vision-language models for accurate image-based diagnostics
+
+- ElevenLabs for realistic human-like voice conversations
+
+- Seamless, empathetic, and informative user interactions
+
+
+
+https://github.com/user-attachments/assets/4a3e6450-2ba4-460a-aa08-bca402361e7e
+
+
+
 
