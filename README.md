@@ -55,7 +55,7 @@ https://github.com/user-attachments/assets/37e6bb9f-eb16-4a7d-ba48-2d11ab7b43c3
 - Predicts potential health risks
 
 - Provides preventive tips and wellness suggestions
-- Perfect for personalized, proactive healthcare planning.
+- Perfect for personalized, proactive healthcare planning
 
 
 
